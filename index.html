@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | AmongUsCloneClient</title>
+    <title>Unity WebGL Player | MMC Among Us</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
@@ -19,19 +20,19 @@
       <div id="unity-footer">
         <div id="unity-webgl-logo"></div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">AmongUsCloneClient</div>
+        <div id="unity-build-title">MMC Among Us</div>
       </div>
     </div>
     <script>
       var buildUrl = "Build";
       var loaderUrl = buildUrl + "/amoing us.loader.js";
       var config = {
-        dataUrl: buildUrl + "/amoing us.data",
-        frameworkUrl: buildUrl + "/amoing us.framework.js",
-        codeUrl: buildUrl + "/amoing us.wasm",
+        dataUrl: buildUrl + "/amoing us.data.unityweb",
+        frameworkUrl: buildUrl + "/amoing us.framework.js.unityweb",
+        codeUrl: buildUrl + "/amoing us.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
-        companyName: "DefaultCompany",
-        productName: "AmongUsCloneClient",
+        companyName: "MMC",
+        productName: "MMC Among Us",
         productVersion: "1.0",
       };
 
