@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en-us">
   <head>
+    <!-- Yap Games networking: peerjs must exist before the Unity loader runs, or
+         YapPeerTransport.jslib reports "Peer is not defined" when hosting/joining.
+         Living in the WebGL TEMPLATE means every build regenerates index.html WITH this line. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | MMC Among Us</title>
