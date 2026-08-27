@@ -5,6 +5,10 @@
          YapPeerTransport.jslib reports "Peer is not defined" when hosting/joining.
          Living in the WebGL TEMPLATE means every build regenerates index.html WITH this line. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
+    <!-- HTML task minigames (see tasks.js). Overlays the Unity canvas; no Unity UI needed. -->
+    <link rel="stylesheet" href="tasks.css">
+    <script src="tasks.js"></script>
+    <script src="meeting.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | MMC Among Us</title>
@@ -60,6 +64,7 @@
         createUnityInstance(canvas, config, (progress) => {
           progressBarFull.style.width = 100 * progress + "%";
         }).then((unityInstance) => {
+          window.unityInstance = unityInstance; // lets tasks.js call SendMessage back into Unity
           loadingBar.style.display = "none";
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
