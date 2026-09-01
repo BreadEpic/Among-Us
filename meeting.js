@@ -40,6 +40,29 @@
     return wrap;
   }
 
+
+  /**
+   * FULLSCREEN FIX: when the Unity canvas goes fullscreen the browser only paints that element and its
+   * descendants, so an overlay parented to <body> silently disappears. Parent overlays to whatever is
+   * currently fullscreen, and move them if that changes while one is open.
+   */
+  function overlayHost() {
+    return document.fullscreenElement || document.webkitFullscreenElement || document.body;
+  }
+
+  function followFullscreen(getNodes) {
+    var move = function () {
+      var host = overlayHost();
+      getNodes().forEach(function (node) {
+        if (node && node.parentNode !== host) { host.appendChild(node); }
+      });
+    };
+    document.addEventListener('fullscreenchange', move);
+    document.addEventListener('webkitfullscreenchange', move);
+  }
+
+  followFullscreen(function () { return [YapMeeting._root, YapMeeting._intro]; });
+
   var state = { me: 0, players: [], canVote: false, votedFor: null };
 
   YapMeeting._build = function (json) {
@@ -162,7 +185,7 @@
       toUnity('OnMeetingChat', text);
     }
 
-    document.body.appendChild(overlay);
+    overlayHost().appendChild(overlay);
     YapMeeting._root = overlay;
     YapMeeting.open = true;
 
@@ -201,7 +224,7 @@
     runner.appendChild(el('u', 'au-visor'));
     intro.appendChild(runner);
 
-    document.body.appendChild(intro);
+    overlayHost().appendChild(intro);
     YapMeeting._intro = intro;
 
     YapMeeting._introTimer = setTimeout(function () {

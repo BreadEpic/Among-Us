@@ -36,6 +36,27 @@
     document.head.appendChild(link);
   }
 
+
+  /**
+   * FULLSCREEN FIX: when the Unity canvas goes fullscreen the browser only paints that element and its
+   * descendants, so an overlay parented to <body> silently disappears. Parent overlays to whatever is
+   * currently fullscreen, and move them if that changes while one is open.
+   */
+  function overlayHost() {
+    return document.fullscreenElement || document.webkitFullscreenElement || document.body;
+  }
+
+  function followFullscreen(getNodes) {
+    var move = function () {
+      var host = overlayHost();
+      getNodes().forEach(function (node) {
+        if (node && node.parentNode !== host) { host.appendChild(node); }
+      });
+    };
+    document.addEventListener('fullscreenchange', move);
+    document.addEventListener('webkitfullscreenchange', move);
+  }
+
   var H = YapTasks.helpers = {
     el: function (tag, cls, css) {
       var node = document.createElement(tag);
@@ -105,6 +126,8 @@
     rand: function (min, max) { return min + Math.random() * (max - min); }
   };
 
+  followFullscreen(function () { return [YapTasks._root]; });
+
   YapTasks.openTask = function (taskName, stepIndex) {
     if (YapTasks.open) { return; }
     ensureStyle();
@@ -133,7 +156,7 @@
 
     var body = H.el('div');
     panel.appendChild(body);
-    document.body.appendChild(overlay);
+    overlayHost().appendChild(overlay);
     YapTasks._root = overlay;
 
     var finished = false;
@@ -629,5 +652,79 @@
 
     timers.push(setTimeout(nextRound, 400));
     return function () { timers.forEach(clearTimeout); };
+  };
+})();
+
+/* ------- Distinct replacements: these two were both generic sliders before ------- */
+(function () {
+  var H = window.YapTasks.helpers, G = window.YapTasks.games;
+
+  /* Accept Diverted Power: a breaker panel — flip the one live switch. */
+  G.AcceptDivertedPower = function (body, done) {
+    H.title(body, 'Accept Diverted Power');
+    var status = H.sub(body, 'Flip the switch that is receiving power');
+    var stage = H.stage(body, 470, 300);
+
+    var live = Math.floor(Math.random() * 5);
+    for (var i = 0; i < 5; i++) {
+      (function (idx) {
+        var slot = H.el('div', '', 'position:absolute;left:' + (24 + idx * 88) + 'px;top:40px;' +
+          'width:64px;height:210px;background:#0a1524;border:4px solid #000;border-radius:8px;' +
+          'box-shadow:inset 0 0 0 3px #3f5b78;');
+
+        var lamp = H.el('div', '', 'position:absolute;left:50%;top:12px;width:20px;height:20px;' +
+          'margin-left:-10px;border-radius:50%;border:3px solid #000;background:' +
+          (idx === live ? '#ffd34d' : '#33465c') + ';');
+        slot.appendChild(lamp);
+
+        var lever = H.el('div', '', 'position:absolute;left:8px;top:150px;width:44px;height:44px;' +
+          'border-radius:6px;border:4px solid #000;background:#c9d4de;cursor:pointer;');
+        slot.appendChild(lever);
+
+        slot.onpointerdown = function () {
+          if (idx !== live) {
+            status.textContent = 'That breaker is dead'; status.className = 'yap-sub yap-bad';
+            return;
+          }
+          lever.style.top = '48px';
+          lamp.style.background = '#46e07a';
+          status.textContent = 'Power accepted'; status.className = 'yap-sub yap-ok';
+          done();
+        };
+
+        stage.appendChild(slot);
+      })(i);
+    }
+  };
+
+  /* Align Engine Output: line the moving engine core up with the fixed centre line. */
+  G.AlignEngineOutput = function (body, done) {
+    H.title(body, 'Align Engine Output');
+    var status = H.sub(body, 'Drag the core onto the centre line');
+    var stage = H.stage(body, 300, 360);
+
+    var target = H.el('div', '', 'position:absolute;left:0;top:166px;width:100%;height:28px;' +
+      'background:rgba(70,224,122,.18);border-top:3px dashed #46e07a;border-bottom:3px dashed #46e07a;');
+    stage.appendChild(target);
+
+    var rail = H.el('div', '', 'position:absolute;left:138px;top:12px;width:16px;height:336px;' +
+      'background:#0a1524;border:3px solid #000;border-radius:8px;');
+    stage.appendChild(rail);
+
+    var core = H.el('div', '', 'position:absolute;left:78px;top:' + H.rand(20, 300) + 'px;width:136px;height:52px;' +
+      'border-radius:10px;border:4px solid #000;background:#ff9b3d;box-shadow:inset 0 -6px 0 rgba(0,0,0,.25);');
+    stage.appendChild(core);
+
+    H.drag(core, function (ev) {
+      var p = H.local(stage, ev);
+      core.style.top = Math.max(6, Math.min(300, p.y - 26)) + 'px';
+      var mid = parseFloat(core.style.top) + 26;
+      if (mid >= 166 && mid <= 194) {
+        core.style.top = '154px';
+        core.style.background = '#46e07a';
+        status.textContent = 'Output aligned'; status.className = 'yap-sub yap-ok';
+        done();
+      }
+    });
   };
 })();
