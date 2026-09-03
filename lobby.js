@@ -23,20 +23,25 @@
     if (YapLobby._root) { overlayHost().appendChild(YapLobby._root); }
   });
 
-  /* Must match the C# PlayerColor enum, in order — the index IS the value sent back. */
+  /* MUST match the C# PlayerColor enum, in order, because the INDEX is the value Unity sends back:
+     "taken" is a list of enum integers and "myColor" is one. This list used to be in a different order
+     from Yellow onwards, so the right colour was applied (the click sends a name) while the wrong swatch
+     was greyed out and the wrong one was marked as yours.
+
+     Hexes are PlayerColorHex.cs, which is what the rest of the game tints crewmates with. */
   var COLORS = [
-    { name: 'Red', hex: '#c51111' },
-    { name: 'Blue', hex: '#132ed1' },
-    { name: 'Green', hex: '#117f2d' },
-    { name: 'Pink', hex: '#ed54ba' },
-    { name: 'Orange', hex: '#ef7d0d' },
+    { name: 'Red',    hex: '#c51111' },
+    { name: 'Blue',   hex: '#132ed1' },
+    { name: 'Green',  hex: '#117f2d' },
     { name: 'Yellow', hex: '#f5f557' },
-    { name: 'Black', hex: '#3f474e' },
-    { name: 'White', hex: '#d6e0f0' },
+    { name: 'Pink',   hex: '#ee54bb' },
+    { name: 'Orange', hex: '#ef7d0d' },
     { name: 'Purple', hex: '#6b2fbb' },
-    { name: 'Brown', hex: '#71491e' },
-    { name: 'Cyan', hex: '#38fedc' },
-    { name: 'Lime', hex: '#50ef39' }
+    { name: 'Black',  hex: '#3f474e' },
+    { name: 'Brown',  hex: '#71491e' },
+    { name: 'Cyan',   hex: '#38fedc' },
+    { name: 'Lime',   hex: '#50ef39' },
+    { name: 'White',  hex: '#d6e0f0' }
   ];
 
   /* Each setting: the key Unity knows it by, a label, the steps it can take, and
