@@ -12,6 +12,9 @@
     <script src="sabotage.js"></script>
     <script src="lobby.js"></script>
     <script src="browser.js"></script>
+    <!-- Decides whether the keyboard goes to the game or to an HTML text box. Without it nothing
+         the player types or presses ever reaches Unity. -->
+    <script src="focus.js"></script>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity WebGL Player | MMC Among Us</title>
@@ -69,6 +72,7 @@
         }).then((unityInstance) => {
           window.unityInstance = unityInstance; // lets tasks.js call SendMessage back into Unity
           loadingBar.style.display = "none";
+          if (window.yapFocusGame) { window.yapFocusGame(); } // keys go to the game from the start
           fullscreenButton.onclick = () => {
             unityInstance.SetFullscreen(1);
           };
