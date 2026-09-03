@@ -22,26 +22,12 @@
     _state: { type: 'None', seconds: 0, mask: 0 }
   };
 
-  function el(tag, cls, css) {
-    var node = document.createElement(tag);
-    if (cls) { node.className = cls; }
-    if (css) { node.style.cssText = css; }
-    return node;
-  }
+  var el = window.YapUI.el;
 
-  function toUnity(method, value) {
-    try {
-      if (typeof SendMessage === 'function') { SendMessage('SabotageSystem', method, value); return; }
-    } catch (e) { /* fall through */ }
-    try {
-      if (window.unityInstance) { window.unityInstance.SendMessage('SabotageSystem', method, value); }
-    } catch (e2) { console.warn('[YapSabotage] could not reach Unity:', e2); }
-  }
+  var toUnity = window.YapUI.sender('SabotageSystem', 'YapSabotage');
 
   /* Overlays must live inside whatever is fullscreen or the browser will not paint them. */
-  function overlayHost() {
-    return document.fullscreenElement || document.webkitFullscreenElement || document.body;
-  }
+  var overlayHost = window.YapUI.overlayHost;
 
   function followFullscreen() {
     var move = function () {

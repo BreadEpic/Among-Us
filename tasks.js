@@ -13,14 +13,7 @@
 
   var YapTasks = window.YapTasks = { games: {}, open: false, _root: null, _cleanup: null };
 
-  function toUnity(method, value) {
-    try {
-      if (typeof SendMessage === 'function') { SendMessage('TaskSystem', method, value); return; }
-    } catch (e) { /* fall through to unityInstance */ }
-    try {
-      if (window.unityInstance) { window.unityInstance.SendMessage('TaskSystem', method, value); }
-    } catch (e2) { console.warn('[YapTasks] could not reach Unity:', e2); }
-  }
+  var toUnity = window.YapUI.sender('TaskSystem', 'YapTasks');
 
   /* Styling lives in tasks.css (linked from index.html) so it can be restyled without
      touching this file. If that link is missing for any reason, add it ourselves. */
@@ -42,9 +35,7 @@
    * descendants, so an overlay parented to <body> silently disappears. Parent overlays to whatever is
    * currently fullscreen, and move them if that changes while one is open.
    */
-  function overlayHost() {
-    return document.fullscreenElement || document.webkitFullscreenElement || document.body;
-  }
+  var overlayHost = window.YapUI.overlayHost;
 
   function followFullscreen(getNodes) {
     var move = function () {
@@ -58,12 +49,7 @@
   }
 
   var H = YapTasks.helpers = {
-    el: function (tag, cls, css) {
-      var node = document.createElement(tag);
-      if (cls) { node.className = cls; }
-      if (css) { node.style.cssText = css; }
-      return node;
-    },
+    el: window.YapUI.el,
     title: function (body, text) {
       var node = H.el('div', 'yap-title');
       node.textContent = text;

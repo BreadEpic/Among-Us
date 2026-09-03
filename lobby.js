@@ -13,25 +13,11 @@
 
   var YapLobby = window.YapLobby = { open: false, _root: null, _state: null };
 
-  function el(tag, cls, css) {
-    var node = document.createElement(tag);
-    if (cls) { node.className = cls; }
-    if (css) { node.style.cssText = css; }
-    return node;
-  }
+  var el = window.YapUI.el;
 
-  function toUnity(method, value) {
-    try {
-      if (typeof SendMessage === 'function') { SendMessage('LobbySystem', method, value); return; }
-    } catch (e) { /* fall through */ }
-    try {
-      if (window.unityInstance) { window.unityInstance.SendMessage('LobbySystem', method, value); }
-    } catch (e2) { console.warn('[YapLobby] could not reach Unity:', e2); }
-  }
+  var toUnity = window.YapUI.sender('LobbySystem', 'YapLobby');
 
-  function overlayHost() {
-    return document.fullscreenElement || document.webkitFullscreenElement || document.body;
-  }
+  var overlayHost = window.YapUI.overlayHost;
 
   document.addEventListener('fullscreenchange', function () {
     if (YapLobby._root) { overlayHost().appendChild(YapLobby._root); }
@@ -54,7 +40,11 @@
   ];
 
   /* Each setting: the key Unity knows it by, a label, the steps it can take, and
-     how to write the value out. Steps rather than a slider, like the real game. */
+     how to write the value out. Steps rather than a slider, like the real game.
+
+     NO VISIBILITY ROW. Whether a game is public is carried by the FIRST LETTER of the room code (P or
+     X) and decided when you press HOST, and the code never changes afterwards. A switch here could not
+     have made an existing game findable, so it was a control that did nothing. */
   var SETTINGS = [
     { key: 'speed', label: 'Player Speed', steps: [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3], suffix: 'x' },
     { key: 'crewVision', label: 'Crewmate Vision', steps: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2, 3], suffix: 'x' },
@@ -63,7 +53,6 @@
     { key: 'killDistance', label: 'Kill Distance', steps: [1, 1.5, 2, 2.5, 3], names: ['Very Short', 'Short', 'Normal', 'Long', 'Very Long'] },
     { key: 'impostors', label: 'Impostors', steps: [0, 1, 2, 3], names: ['Auto', '1', '2', '3'] },
     { key: 'maxPlayers', label: 'Max Players', steps: [4, 6, 8, 10, 12, 15, 18, 20] },
-    { key: 'public', label: 'Visibility', steps: [0, 1], names: ['Private (code only)', 'Public'] },
     { key: 'emergencies', label: 'Emergency Meetings', steps: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] },
     { key: 'emergencyCooldown', label: 'Emergency Cooldown', steps: [0, 5, 10, 15, 20, 25, 30, 45, 60], suffix: 's' },
     { key: 'discussion', label: 'Discussion Time', steps: [0, 15, 30, 45, 60, 90, 120], suffix: 's' },

@@ -14,21 +14,9 @@
 
   var YapMeeting = window.YapMeeting = { open: false, _root: null, _timer: 0, _voted: false };
 
-  function toUnity(method, value) {
-    try {
-      if (typeof SendMessage === 'function') { SendMessage('TaskSystem', method, value); return; }
-    } catch (e) { /* fall through */ }
-    try {
-      if (window.unityInstance) { window.unityInstance.SendMessage('TaskSystem', method, value); }
-    } catch (e2) { console.warn('[YapMeeting] could not reach Unity:', e2); }
-  }
+  var toUnity = window.YapUI.sender('TaskSystem', 'YapMeeting');
 
-  function el(tag, cls, css) {
-    var node = document.createElement(tag);
-    if (cls) { node.className = cls; }
-    if (css) { node.style.cssText = css; }
-    return node;
-  }
+  var el = window.YapUI.el;
 
   /* A little CSS crewmate in the player's colour. */
   function bean(color, dead) {
@@ -46,9 +34,7 @@
    * descendants, so an overlay parented to <body> silently disappears. Parent overlays to whatever is
    * currently fullscreen, and move them if that changes while one is open.
    */
-  function overlayHost() {
-    return document.fullscreenElement || document.webkitFullscreenElement || document.body;
-  }
+  var overlayHost = window.YapUI.overlayHost;
 
   function followFullscreen(getNodes) {
     var move = function () {

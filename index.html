@@ -7,6 +7,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
     <!-- HTML task minigames (see tasks.js). Overlays the Unity canvas; no Unity UI needed. -->
     <link rel="stylesheet" href="tasks.css">
+    <!-- Shared by every overlay below, so it MUST come first. -->
+    <script src="common.js"></script>
     <script src="tasks.js"></script>
     <script src="meeting.js"></script>
     <script src="sabotage.js"></script>
@@ -20,6 +22,22 @@
     <title>Unity WebGL Player | MMC Among Us</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+    <style>
+      /* The CONTAINER goes fullscreen (see the fullscreen button), so the canvas has to be told to
+         fill it -- and the HTML overlays live in here with it, which is the whole point. */
+      #unity-container:fullscreen,
+      #unity-container:-webkit-full-screen {
+        width: 100%;
+        height: 100%;
+        background: #000;
+      }
+
+      #unity-container:fullscreen #unity-canvas,
+      #unity-container:-webkit-full-screen #unity-canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    </style>
   </head>
   <body>
     <div id="unity-container" class="unity-desktop">
@@ -74,7 +92,15 @@
           loadingBar.style.display = "none";
           if (window.yapFocusGame) { window.yapFocusGame(); } // keys go to the game from the start
           fullscreenButton.onclick = () => {
-            unityInstance.SetFullscreen(1);
+            var request = container.requestFullscreen
+                       || container.webkitRequestFullscreen
+                       || container.msRequestFullscreen;
+
+            if (request) {
+              request.call(container);
+            } else {
+              unityInstance.SetFullscreen(1); // no element fullscreen here; overlays will be hidden
+            }
           };
         }).catch((message) => {
           alert(message);
