@@ -33,6 +33,9 @@
 
     var overlay = el('div');
     overlay.id = 'yap-task-overlay';
+    // Opaque, unlike the in-game overlays: this one replaces the menu rather than sitting over the game,
+    // and the see-through backdrop let the AMONG US logo land right on top of the buttons.
+    overlay.classList.add('brw-overlay');
 
     var panel = el('div');
     panel.id = 'yap-task-panel';
