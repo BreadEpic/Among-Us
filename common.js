@@ -43,6 +43,29 @@
   window.yapOverlayHost = YapUI.overlayHost;
 
   /**
+   * A little crewmate in the given colour. Styled by .lob-bean* in tasks.css.
+   *
+   * Lived in lobby.js until the kill screen needed one too.
+   */
+  YapUI.crewmate = function (hex, size) {
+    var wrap = YapUI.el('div', 'lob-bean');
+    wrap.style.width = size + 'px';
+    wrap.style.height = (size * 1.28) + 'px';
+
+    var body = YapUI.el('div', 'lob-bean-body');
+    body.style.background = hex;
+    wrap.appendChild(body);
+
+    wrap.appendChild(YapUI.el('div', 'lob-bean-visor'));
+
+    var pack = YapUI.el('div', 'lob-bean-pack');
+    pack.style.background = hex;
+    wrap.appendChild(pack);
+
+    return wrap;
+  };
+
+  /**
    * Builds the "send this to Unity" function for one overlay.
    *
    * Unity is addressed by GameObject NAME, so each overlay talks to its own: getting the name wrong

@@ -94,24 +94,7 @@
   /* ------------------------------------------------------------- the crewmate */
 
   /* A little bean, drawn with divs, so the preview needs no artwork. */
-  function crewmate(hex, size) {
-    var wrap = el('div', 'lob-bean');
-    wrap.style.width = size + 'px';
-    wrap.style.height = (size * 1.28) + 'px';
-
-    var body = el('div', 'lob-bean-body');
-    body.style.background = hex;
-    wrap.appendChild(body);
-
-    var visor = el('div', 'lob-bean-visor');
-    wrap.appendChild(visor);
-
-    var pack = el('div', 'lob-bean-pack');
-    pack.style.background = hex;
-    wrap.appendChild(pack);
-
-    return wrap;
-  }
+  var crewmate = window.YapUI.crewmate;
 
   /* ------------------------------------------------------------------ the menu */
 
@@ -174,7 +157,8 @@
 
       var swatch = el('button', 'lob-swatch' + (taken ? ' taken' : '') + (index === state.myColor ? ' mine' : ''));
       swatch.style.background = color.hex;
-      swatch.title = taken ? color.name + ' (taken)' : color.name;
+      swatch.title = taken ? color.name + ' (taken)'
+                   : (index === state.myColor ? color.name + ' (yours)' : color.name);
       swatch.disabled = taken;
 
       swatch.onclick = function () {
